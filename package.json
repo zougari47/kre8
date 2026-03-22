@@ -1,12 +1,23 @@
 {
   "name": "kre8",
-  "module": "index.ts",
   "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build"
   },
-  "peerDependencies": {
-    "typescript": "^5"
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.1"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.168.1",
+    "@tanstack/react-start": "^1.167.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   }
 }
