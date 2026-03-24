@@ -1,0 +1,62 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "react",
+    "react-perf",
+    "import",
+    "jsx-a11y"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "restriction": "warn",
+    "style": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "capitalized-comments": "off",
+    "func-style": "off",
+    "import/consistent-type-specifier-style": "off",
+    "import/exports-last": "off",
+    "import/no-default-export": "off",
+    "import/no-duplicates": "error",
+    "import/no-named-export": "off",
+    "import/prefer-default-export": "off",
+    "no-console": [
+      "error",
+      {
+        "allow": ["info", "warn", "error"]
+      }
+    ],
+    "no-duplicate-imports": "off",
+    "no-use-before-define": "off",
+    "react/jsx-filename-extension": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-multi-comp": "off",
+    "react/no-unstable-nested-components": "error",
+    "react/only-export-components": "off",
+    "react/react-in-jsx-scope": "off",
+    "sort-imports": "off",
+    "sort-keys": "off",
+    "typescript/no-explicit-any": "error",
+    "unicorn/filename-case": "error"
+  },
+  "settings": {
+    "react": { "version": "19.2.4" }
+  },
+  "env": { "builtin": true },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.convex/**",
+    "**/convex/_generated/**",
+    "**/*.gen.ts"
+  ],
+  "options": {
+    "typeAware": true
+  }
+}

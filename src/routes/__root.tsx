@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import type { ReactNode } from "react"
+
 import {
   Outlet,
   createRootRoute,
@@ -13,7 +14,7 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       {
-        charSet: "utf-8",
+        charSet: "utf8",
       },
       {
         name: "viewport",
@@ -39,7 +40,7 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html>
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
