@@ -14,7 +14,7 @@ export default defineConfig({
   },
   rules: {},
   settings: {
-    react: { version: "19.2.4" },
+    react: { version: "19" },
   },
   env: { builtin: true },
   ignorePatterns: [
