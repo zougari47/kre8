@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "bun --bun vite build",
+    "start": "bun run .output/server/index.mjs",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
@@ -44,6 +45,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
+    "nitro": "^3.0.260415-beta",
     "oxfmt": "^0.42.0",
     "oxlint-tsgolint": "^0.17.4",
     "tailwindcss": "^4.2.2",
