@@ -18,7 +18,12 @@ export default defineConfig({
       },
       {
         groupName: "convex",
-        elementNamePattern: ["convex", "convex/*", "convex-helpers/*"],
+        elementNamePattern: [
+          "convex",
+          "convex/*",
+          "convex-helpers/*",
+          "@/convex/*",
+        ],
       },
       {
         groupName: "internal-types",
@@ -61,8 +66,9 @@ export default defineConfig({
       "internal-ui", // 8. @/components/ui
       "internal-components", // 9. @/components
       "internal-styles", // 10. @/styles
-      ["parent", "sibling", "index"], // 11. relative imports
-      "type", // 12. type imports last
+      "internal",
+      ["parent", "sibling", "index"], // 12. relative imports
+      "type", // 13. type imports last
     ],
   },
   ignorePatterns: [
