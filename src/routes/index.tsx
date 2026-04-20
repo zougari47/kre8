@@ -7,7 +7,9 @@ export const Route = createFileRoute("/")({
 function Home() {
   return (
     <div>
-      <button type="button">Click</button>
+      <button type="button" className="text-blue-200">
+        Click
+      </button>
     </div>
   );
 }
