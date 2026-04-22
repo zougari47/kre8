@@ -15,6 +15,9 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+  ssr: {
+    noExternal: ["@convex-dev/better-auth"],
+  },
   plugins: [
     tanstackStart(),
     // react's vite plugin must come after start's vite plugin

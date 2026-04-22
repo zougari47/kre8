@@ -16,5 +16,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - .env.local
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
     command: sh -c "bun install && bun run dev -- --host"
