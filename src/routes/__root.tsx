@@ -14,6 +14,8 @@ import {
 import { createRootRouteWithContext } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 
+import { Toaster } from "@/components/ui/sonner";
+
 import appCss from "@/styles/globals.css?url";
 
 import type { ConvexQueryClient } from "@convex-dev/react-query";
@@ -86,6 +88,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body>
         {children}
+        <Toaster />
         <Scripts />
       </body>
     </html>
