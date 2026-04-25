@@ -69,7 +69,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       email: values.email,
       password: values.password,
       name: values.name,
-      callbackURL: "/dashboard",
     });
 
     if (error) {
@@ -78,7 +77,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
 
     toast.success("Account created successfully!");
-    void navigate({ to: "/signup" });
+    void navigate({ to: "/dashboard" });
   }
 
   return (
@@ -99,6 +98,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="text"
                 placeholder="John Doe"
                 aria-invalid={!!errors.name}
+                disabled={isSubmitting}
                 {...register("name")}
               />
               <FieldError errors={[errors.name]} />
@@ -110,6 +110,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="email"
                 placeholder="m@example.com"
                 aria-invalid={!!errors.email}
+                disabled={isSubmitting}
                 {...register("email")}
               />
               <FieldError errors={[errors.email]} />
@@ -119,6 +120,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <PasswordInput
                 id="password"
                 aria-invalid={!!errors.password}
+                disabled={isSubmitting}
                 {...register("password")}
               />
               <PasswordMeter score={passwordScore} />
@@ -132,6 +134,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <PasswordInput
                 id="confirm-password"
                 aria-invalid={!!errors.confirmPassword}
+                disabled={isSubmitting}
                 {...register("confirmPassword")}
               />
               <FieldError errors={[errors.confirmPassword]} />

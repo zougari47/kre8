@@ -51,7 +51,6 @@ export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
     const { error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
-      callbackURL: "/dashboard",
     });
 
     if (error) {
@@ -81,6 +80,7 @@ export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="email"
                 placeholder="m@example.com"
                 aria-invalid={!!errors.email}
+                disabled={isSubmitting}
                 {...register("email")}
               />
               <FieldError errors={[errors.email]} />
@@ -90,6 +90,7 @@ export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
               <PasswordInput
                 id="password"
                 aria-invalid={!!errors.password}
+                disabled={isSubmitting}
                 {...register("password")}
               />
               <FieldError errors={[errors.password]} />
