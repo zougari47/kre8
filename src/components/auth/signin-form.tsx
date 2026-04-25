@@ -1,8 +1,12 @@
 import * as React from "react";
+import { useForm } from "react-hook-form";
 
+import { PasswordInput } from "@/components/shared/password-input";
 import { authClient } from "@/lib/auth/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,21 +16,43 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
-export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const [isPending, setIsPending] = React.useState(false);
-  const navigate = useNavigate();
+const signinSchema = z.object({
+  email: z.email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+});
 
-  async function handleTestSignin() {
-    setIsPending(true);
+type SigninValues = z.infer<typeof signinSchema>;
+
+export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SigninValues>({
+    resolver: zodResolver(signinSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(values: SigninValues) {
     const { error } = await authClient.signIn.email({
-      email: "test@gmail.com",
-      password: "12345678",
+      email: values.email,
+      password: values.password,
       callbackURL: "/dashboard",
     });
-
-    setIsPending(false);
 
     if (error) {
       toast.error(error.message || "Failed to sign in");
@@ -42,30 +68,43 @@ export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
       <CardHeader>
         <CardTitle>Sign In</CardTitle>
         <CardDescription>
-          Click the button below to sign in with test credentials
+          Enter your email and password to sign in
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
-        <Button onClick={handleTestSignin} disabled={isPending}>
-          {isPending && <Spinner data-icon="inline-start" />}
-          Sign in as Test User
-        </Button>
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-        <Button
-          variant="outline"
-          onClick={() => authClient.signIn.social({ provider: "google" })}
-        >
-          Sign in with Google
-        </Button>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Field data-invalid={!!errors.email}>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                aria-invalid={!!errors.email}
+                {...register("email")}
+              />
+              <FieldError errors={[errors.email]} />
+            </Field>
+            <Field data-invalid={!!errors.password}>
+              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <PasswordInput
+                id="password"
+                aria-invalid={!!errors.password}
+                {...register("password")}
+              />
+              <FieldError errors={[errors.password]} />
+            </Field>
+            <Field>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Spinner data-icon="inline-start" />}
+                Sign In
+              </Button>
+              <FieldDescription className="px-6 text-center">
+                Don't have an account? <a href="/signup">Sign up</a>
+              </FieldDescription>
+            </Field>
+          </FieldGroup>
+        </form>
       </CardContent>
     </Card>
   );
