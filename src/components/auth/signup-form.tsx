@@ -1,6 +1,11 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
+import { PasswordInput } from "@/components/shared/password-input";
+import {
+  getPasswordScore,
+  PasswordMeter,
+} from "@/components/shared/password-meter";
 import { authClient } from "@/lib/auth/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
@@ -27,7 +32,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 const signupSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
+    name: z.string().min(3, "Name must be at least 3 characters"),
     email: z.email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
@@ -44,6 +49,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
@@ -54,6 +60,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       confirmPassword: "",
     },
   });
+
+  const passwordValue = watch("password");
+  const passwordScore = getPasswordScore(passwordValue);
 
   async function onSubmit(values: SignupValues) {
     const { error } = await authClient.signUp.email({
@@ -103,36 +112,28 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 aria-invalid={!!errors.email}
                 {...register("email")}
               />
-              <FieldDescription>
-                We&apos;ll use this to contact you. We will not share your email
-                with anyone else.
-              </FieldDescription>
               <FieldError errors={[errors.email]} />
             </Field>
             <Field data-invalid={!!errors.password}>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 aria-invalid={!!errors.password}
                 {...register("password")}
               />
-              <FieldDescription>
-                Must be at least 8 characters long.
-              </FieldDescription>
+              <PasswordMeter score={passwordScore} />
               <FieldError errors={[errors.password]} />
             </Field>
             <Field data-invalid={!!errors.confirmPassword}>
               <FieldLabel htmlFor="confirm-password">
                 Confirm Password
               </FieldLabel>
-              <Input
+
+              <PasswordInput
                 id="confirm-password"
-                type="password"
                 aria-invalid={!!errors.confirmPassword}
                 {...register("confirmPassword")}
               />
-              <FieldDescription>Please confirm your password.</FieldDescription>
               <FieldError errors={[errors.confirmPassword]} />
             </Field>
             <FieldGroup>
@@ -141,15 +142,15 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   {isSubmitting && <Spinner data-icon="inline-start" />}
                   Create Account
                 </Button>
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() =>
-                    authClient.signIn.social({ provider: "google" })
-                  }
-                >
-                  Sign up with Google
-                </Button>
+                {/* <Button */}
+                {/*   variant="outline" */}
+                {/*   type="button" */}
+                {/*   onClick={() => */}
+                {/*     authClient.signIn.social({ provider: "google" }) */}
+                {/*   } */}
+                {/* > */}
+                {/*   Sign up with Google */}
+                {/* </Button> */}
                 <FieldDescription className="px-6 text-center">
                   Already have an account? <a href="/signin">Sign in</a>
                 </FieldDescription>
