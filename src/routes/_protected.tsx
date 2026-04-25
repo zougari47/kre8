@@ -5,7 +5,7 @@ export const Route = createFileRoute("/_protected")({
     if (!context.isAuthenticated) {
       console.log("not autenticated redirecting to /sign-in");
       console.log({ context });
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/signin" });
     }
   },
   component: () => {

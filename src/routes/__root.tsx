@@ -47,6 +47,7 @@ export const Route = createRootRouteWithContext<{
   }),
   beforeLoad: async (ctx) => {
     const token = await getAuth();
+    console.log(token, " token from before load __root");
 
     // all queries, mutations and actions through TanStack Query will be
     // authenticated during SSR if we have a valid token
@@ -86,7 +87,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-background text-foreground">
         {children}
         <Toaster />
         <Scripts />
