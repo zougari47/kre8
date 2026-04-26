@@ -54,6 +54,7 @@ export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
     });
 
     if (error) {
+      console.log({ error });
       toast.error(error.message || "Failed to sign in");
       return;
     }
