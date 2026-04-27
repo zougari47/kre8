@@ -25,6 +25,7 @@ export const authComponent = createClient<DataModel>(components.betterAuth, {
           username: "",
           role: "user",
           onBoardingCompleted: false,
+          isDeleted: false,
         });
       },
     },

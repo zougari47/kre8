@@ -81,8 +81,8 @@ function SidebarLogo() {
       src={isCollapsed ? "/logo-small.svg" : "/logo.svg"}
       alt="Kre8"
       className={cn(
-        "object-contain transition-all duration-200",
-        isCollapsed ? "size-8" : "h-10 w-auto",
+        "transition-all duration-200",
+        isCollapsed ? "size-16" : "w-auto",
       )}
     />
   );

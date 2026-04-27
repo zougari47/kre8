@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import { api } from "@/convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import { useMutation, useQuery } from "convex/react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,12 +29,36 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 
+const MAX_FILE_SIZE = 250 * 1024; // 250KB
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
 const onboardingSchema = z.object({
   username: z
     .string()
     .min(3, "Username must be at least 3 characters")
     .max(30, "Username must be at most 30 characters"),
   bio: z.string().max(160, "Bio must be at most 160 characters").optional(),
+  avatar: z
+    .instanceof(FileList)
+    .refine(
+      (files) => files.length === 0 || files.length === 1,
+      "Please select one image",
+    )
+    .refine(
+      (files) => files.length === 0 || files[0].size <= MAX_FILE_SIZE,
+      "File size must be less than 250KB",
+    )
+    .refine(
+      (files) =>
+        files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files[0].type),
+      "Only .jpg, .jpeg, .png, and .webp files are accepted",
+    )
+    .optional(),
 });
 
 type OnboardingValues = z.infer<typeof onboardingSchema>;
@@ -44,18 +69,39 @@ export function OnboardingForm({
   const navigate = useNavigate();
   const profile = useQuery(api.profiles.getProfile);
   const completeOnboarding = useMutation(api.profiles.completeOnboarding);
+  const generateUploadUrl = useMutation(api.profiles.generateUploadUrl);
 
   const {
     register,
     handleSubmit,
+    control,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<OnboardingValues>({
+    mode: "onChange",
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
       username: "",
       bio: "",
+      avatar: undefined,
     },
   });
+
+  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
+  const avatarFiles = watch("avatar");
+
+  React.useEffect(() => {
+    if (avatarFiles && avatarFiles.length > 0) {
+      const file = avatarFiles[0];
+      const url = URL.createObjectURL(file);
+      setAvatarPreview(url);
+
+      // Cleanup URL when component unmounts or file changes
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setAvatarPreview(null);
+    }
+  }, [avatarFiles]);
 
   async function onSubmit(values: OnboardingValues) {
     if (!profile?.userId) {
@@ -64,10 +110,35 @@ export function OnboardingForm({
     }
 
     try {
+      let avatarStorageId: string | undefined;
+
+      if (values.avatar && values.avatar.length > 0) {
+        const file = values.avatar[0];
+
+        // Generate upload URL from Convex
+        const uploadUrl = await generateUploadUrl();
+
+        // Upload file directly to storage
+        const response = await fetch(uploadUrl, {
+          method: "POST",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to upload image");
+        }
+
+        // Get storage ID from response - it's returned as JSON { storageId: string }
+        const result = await response.json();
+        avatarStorageId = result.storageId;
+      }
+
       await completeOnboarding({
         userId: profile.userId,
         username: values.username,
         bio: values.bio,
+        avatarStorageId,
       });
 
       toast.success("Profile completed!");
@@ -120,6 +191,37 @@ export function OnboardingForm({
               />
               <FieldDescription>Optional - max 160 characters</FieldDescription>
               <FieldError errors={[errors.bio]} />
+            </Field>
+            <Field data-invalid={!!errors.avatar}>
+              <FieldLabel htmlFor="avatar">Profile Picture</FieldLabel>
+              <div className="flex items-center gap-4">
+                <Avatar size="lg">
+                  <AvatarImage src={avatarPreview ?? undefined} />
+                  <AvatarFallback>{avatarPreview ? "" : "?"}</AvatarFallback>
+                </Avatar>
+                <Controller
+                  control={control}
+                  name="avatar"
+                  render={({ field: { onChange, value, ...field } }) => (
+                    <div className="flex-1">
+                      <Input
+                        id="avatar"
+                        type="file"
+                        accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                        aria-invalid={!!errors.avatar}
+                        disabled={isSubmitting}
+                        onChange={(e) => onChange(e.target.files)}
+                        {...field}
+                        value={value?.filename}
+                      />
+                      <FieldDescription>
+                        Optional - max 250KB, formats: JPG, PNG, WebP
+                      </FieldDescription>
+                      <FieldError errors={[errors.avatar]} />
+                    </div>
+                  )}
+                />
+              </div>
             </Field>
             <Field>
               <Button type="submit" disabled={isSubmitting}>
