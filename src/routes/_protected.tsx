@@ -1,4 +1,6 @@
+import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth/client";
+import { convexQuery } from "@convex-dev/react-query";
 import {
   createFileRoute,
   Link,
@@ -53,10 +55,18 @@ const navigationItems = [
 ];
 
 export const Route = createFileRoute("/_protected")({
-  beforeLoad: ({ context }) => {
+  beforeLoad: async ({ context }) => {
     if (!context.isAuthenticated) {
       console.log("not authenticated redirecting to /signin");
       throw redirect({ to: "/signin" });
+    }
+
+    const profile = await context.queryClient.fetchQuery(
+      convexQuery(api.profiles.getProfile),
+    );
+
+    if (!profile?.onBoardingCompleted) {
+      throw redirect({ to: "/onboarding" });
     }
   },
   component: ProtectedLayout,
