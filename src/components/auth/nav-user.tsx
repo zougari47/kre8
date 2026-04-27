@@ -1,4 +1,7 @@
+import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth/client";
+import { convexQuery } from "@convex-dev/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
   BadgeCheck,
@@ -29,14 +32,20 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function NavUser() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending: isSessionPending } =
+    authClient.useSession();
+  const { data: profile, isPending: isProfilePending } = useSuspenseQuery(
+    convexQuery(api.profiles.getProfile, {}),
+  );
   const navigate = useNavigate();
   const { isMobile } = useSidebar();
 
-  const { name, email } = session?.user ?? {};
+  const isPending = isSessionPending || isProfilePending;
 
-  const userAvatar = session?.user?.image || "";
-  const userInitials = session?.user?.name[0]?.toUpperCase();
+  const email = session?.user?.email;
+  const userName = profile?.username || session?.user?.name || "User";
+  const userAvatar = profile?.avatarUrl || "";
+  const userInitials = userName?.[0]?.toUpperCase() || "U";
 
   async function signout() {
     const { error } = await authClient.signOut();
@@ -63,7 +72,7 @@ export function NavUser() {
                   <Skeleton className="h-full w-full rounded-lg bg-sidebar-foreground/20" />
                 ) : (
                   <>
-                    <AvatarImage src={userAvatar} alt={name} />
+                    <AvatarImage src={userAvatar} alt={userName} />
                     <AvatarFallback className="rounded-lg">
                       {userInitials}
                     </AvatarFallback>
@@ -78,7 +87,7 @@ export function NavUser() {
                   </>
                 ) : (
                   <>
-                    <span className="truncate font-medium">{name}</span>
+                    <span className="truncate font-medium">{userName}</span>
                     <span className="truncate text-xs">{email}</span>
                   </>
                 )}
@@ -97,10 +106,10 @@ export function NavUser() {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
                     {isPending ? (
-                      <Skeleton className="h-full w-full rounded-lg" />
+                      <Skeleton className="h-full w-full rounded-lg bg-sidebar-foreground/20" />
                     ) : (
                       <>
-                        <AvatarImage src={userAvatar} alt={name} />
+                        <AvatarImage src={userAvatar} alt={userName} />
                         <AvatarFallback className="rounded-lg">
                           {userInitials}
                         </AvatarFallback>
@@ -110,12 +119,12 @@ export function NavUser() {
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     {isPending ? (
                       <>
-                        <Skeleton className="mb-1 h-4 w-24" />
-                        <Skeleton className="h-3 w-32" />
+                        <Skeleton className="mb-1 h-4 w-24 bg-sidebar-foreground/20" />
+                        <Skeleton className="h-3 w-32 bg-sidebar-foreground/20" />
                       </>
                     ) : (
                       <>
-                        <span className="truncate font-medium">{name}</span>
+                        <span className="truncate font-medium">{userName}</span>
                         <span className="truncate text-xs">{email}</span>
                       </>
                     )}
