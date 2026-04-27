@@ -2,6 +2,7 @@ import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -50,12 +51,13 @@ const onboardingSchema = z.object({
       "Please select one image",
     )
     .refine(
-      (files) => files.length === 0 || files[0].size <= MAX_FILE_SIZE,
+      (files) => files.length === 0 || (files[0]?.size ?? 0) <= MAX_FILE_SIZE,
       "File size must be less than 250KB",
     )
     .refine(
       (files) =>
-        files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files[0].type),
+        files.length === 0 ||
+        ACCEPTED_IMAGE_TYPES.includes(files[0]?.type ?? ""),
       "Only .jpg, .jpeg, .png, and .webp files are accepted",
     )
     .optional(),
@@ -93,6 +95,8 @@ export function OnboardingForm({
   React.useEffect(() => {
     if (avatarFiles && avatarFiles.length > 0) {
       const file = avatarFiles[0];
+      if (!file) return;
+
       const url = URL.createObjectURL(file);
       setAvatarPreview(url);
 
@@ -110,10 +114,14 @@ export function OnboardingForm({
     }
 
     try {
-      let avatarStorageId: string | undefined;
+      let avatarStorageId: Id<"_storage"> | undefined;
 
       if (values.avatar && values.avatar.length > 0) {
         const file = values.avatar[0];
+
+        if (!file) {
+          throw new Error("No file selected");
+        }
 
         // Generate upload URL from Convex
         const uploadUrl = await generateUploadUrl();
@@ -202,7 +210,9 @@ export function OnboardingForm({
                 <Controller
                   control={control}
                   name="avatar"
-                  render={({ field: { onChange, value, ...field } }) => (
+                  render={({
+                    field: { onChange, value: _value, ...field },
+                  }) => (
                     <div className="flex-1">
                       <Input
                         id="avatar"
@@ -212,7 +222,6 @@ export function OnboardingForm({
                         disabled={isSubmitting}
                         onChange={(e) => onChange(e.target.files)}
                         {...field}
-                        value={value?.filename}
                       />
                       <FieldDescription>
                         Optional - max 250KB, formats: JPG, PNG, WebP
