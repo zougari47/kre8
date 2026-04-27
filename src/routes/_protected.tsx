@@ -1,5 +1,5 @@
+import { NavUser } from "@/components/auth/nav-user";
 import { api } from "@/convex/_generated/api";
-import { authClient } from "@/lib/auth/client";
 import { convexQuery } from "@convex-dev/react-query";
 import {
   createFileRoute,
@@ -7,21 +7,12 @@ import {
   Outlet,
   redirect,
 } from "@tanstack/react-router";
-import { useNavigate, useLocation } from "@tanstack/react-router";
-import { Home, LayoutDashboard, LogOut, Settings, User } from "lucide-react";
+import { useLocation } from "@tanstack/react-router";
+import { Home, LayoutDashboard } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -89,23 +80,7 @@ function SidebarLogo() {
 }
 
 function ProtectedLayout() {
-  const navigate = useNavigate();
   const location = useLocation();
-  const { data: session } = authClient.useSession();
-
-  const handleSignOut = async () => {
-    await authClient.signOut();
-    void navigate({ to: "/signin" });
-  };
-
-  const userInitials = session?.user?.name
-    ? session.user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : session?.user?.email?.[0].toUpperCase() || "U";
 
   return (
     <SidebarProvider>
@@ -150,76 +125,7 @@ function ProtectedLayout() {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <SidebarMenuButton
-                      size="lg"
-                      className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                    >
-                      <Avatar className="size-8 rounded-lg">
-                        <AvatarFallback className="rounded-lg bg-primary text-xs font-semibold text-primary-foreground">
-                          {userInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-semibold">
-                          {session?.user?.name || "User"}
-                        </span>
-                        <span className="truncate text-xs text-muted-foreground">
-                          {session?.user?.email}
-                        </span>
-                      </div>
-                    </SidebarMenuButton>
-                  }
-                />
-                <DropdownMenuContent
-                  className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                  side="bottom"
-                  align="end"
-                  sideOffset={4}
-                >
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                      <Avatar className="size-8 rounded-lg">
-                        <AvatarFallback className="rounded-lg bg-primary text-xs font-semibold text-primary-foreground">
-                          {userInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-semibold">
-                          {session?.user?.name || "User"}
-                        </span>
-                        <span className="truncate text-xs text-muted-foreground">
-                          {session?.user?.email}
-                        </span>
-                      </div>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <Link to="/dashboard">
-                    <DropdownMenuItem>
-                      <User className="mr-2 size-4" />
-                      Profile
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link to="/dashboard">
-                    <DropdownMenuItem>
-                      <Settings className="mr-2 size-4" />
-                      Settings
-                    </DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    <LogOut className="mr-2 size-4" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <NavUser />
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
