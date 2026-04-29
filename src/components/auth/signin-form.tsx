@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { PasswordInput } from "@/components/shared/password-input";
 import { authClient } from "@/lib/auth/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -34,7 +34,7 @@ const signinSchema = z.object({
 type SigninValues = z.infer<typeof signinSchema>;
 
 export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -60,7 +60,7 @@ export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
 
     toast.success("Signed in successfully!");
-    void navigate({ to: "/dashboard" });
+    void router.invalidate();
   }
 
   return (

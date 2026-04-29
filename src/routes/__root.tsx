@@ -87,7 +87,7 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className="light">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>

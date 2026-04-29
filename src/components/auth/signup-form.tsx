@@ -8,7 +8,7 @@ import {
 } from "@/components/shared/password-meter";
 import { authClient } from "@/lib/auth/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -45,7 +45,7 @@ const signupSchema = z
 type SignupValues = z.infer<typeof signupSchema>;
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -77,7 +77,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
 
     toast.success("Account created successfully!");
-    void navigate({ to: "/dashboard" });
+    void router.invalidate();
   }
 
   return (

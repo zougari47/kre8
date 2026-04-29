@@ -16,6 +16,8 @@ export const Route = createFileRoute("/_protected")({
     const profile = await context.queryClient.fetchQuery(
       convexQuery(api.profiles.getProfile),
     );
+    console.log("Profile:", profile); // What does this show?
+    console.log("onBoardingCompleted:", profile?.onBoardingCompleted);
 
     if (!profile?.onBoardingCompleted) {
       throw redirect({ to: "/onboarding" });
