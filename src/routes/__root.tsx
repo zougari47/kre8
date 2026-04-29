@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import type { ReactNode } from "react";
 
+import { ThemeProvider } from "@/context/theme";
 import { authClient } from "@/lib/auth/client";
 import { getToken } from "@/lib/auth/server";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
@@ -68,15 +69,17 @@ function RootComponent() {
   const context = useRouteContext({ from: Route.id });
 
   return (
-    <ConvexBetterAuthProvider
-      client={context.convexQueryClient.convexClient}
-      authClient={authClient}
-      initialToken={context.token}
-    >
-      <RootDocument>
-        <Outlet />
-      </RootDocument>
-    </ConvexBetterAuthProvider>
+    <ThemeProvider>
+      <ConvexBetterAuthProvider
+        client={context.convexQueryClient.convexClient}
+        authClient={authClient}
+        initialToken={context.token}
+      >
+        <RootDocument>
+          <Outlet />
+        </RootDocument>
+      </ConvexBetterAuthProvider>
+    </ThemeProvider>
   );
 }
 

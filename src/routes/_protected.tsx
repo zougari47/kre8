@@ -12,7 +12,6 @@ import { Home, LayoutDashboard } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -31,6 +30,8 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
 const navigationItems = [
   {
@@ -136,11 +137,7 @@ function ProtectedLayout() {
             <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
           <div className="flex flex-1 items-center justify-end gap-2">
-            <Link to="/">
-              <Button variant="ghost" size="sm">
-                Go to Home
-              </Button>
-            </Link>
+            <ThemeSwitcher />
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4">
