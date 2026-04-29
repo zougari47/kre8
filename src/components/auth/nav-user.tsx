@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { cn } from "@/lib/utils";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -32,9 +34,18 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function NavUser() {
+interface NavUserProps extends React.ComponentProps<"ul"> {
+  minimal?: boolean; // show only the Avatar to trigger the dropdown menu
+}
+
+export function NavUser({
+  minimal = false,
+  className,
+  ...props
+}: NavUserProps) {
   const { data: session, isPending: isSessionPending } =
     authClient.useSession();
+
   const { data: profile, isPending: isProfilePending } = useSuspenseQuery(
     convexQuery(api.profiles.getProfile, {}),
   );
@@ -60,42 +71,66 @@ export function NavUser() {
   }
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className={cn("", className)} {...props}>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger className="w-full">
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                {isPending ? (
-                  <Skeleton className="h-full w-full rounded-lg bg-sidebar-foreground/20" />
-                ) : (
-                  <>
-                    <AvatarImage src={userAvatar} alt={userName} />
-                    <AvatarFallback className="rounded-lg">
-                      {userInitials}
-                    </AvatarFallback>
-                  </>
-                )}
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                {isPending ? (
-                  <>
-                    <Skeleton className="mb-1 h-4 w-24 bg-sidebar-foreground/20" />
-                    <Skeleton className="h-3 w-32 bg-sidebar-foreground/20" />
-                  </>
-                ) : (
-                  <>
-                    <span className="truncate font-medium">{userName}</span>
-                    <span className="truncate text-xs">{email}</span>
-                  </>
-                )}
-              </div>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            className="w-full"
+            render={
+              minimal ? (
+                <SidebarMenuButton
+                  size="lg"
+                  className="px-2 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  tooltip={userName}
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    {isPending ? (
+                      <Skeleton className="h-full w-full rounded-lg bg-sidebar-foreground/20" />
+                    ) : (
+                      <>
+                        <AvatarImage src={userAvatar} alt={userName} />
+                        <AvatarFallback className="rounded-lg">
+                          {userInitials}
+                        </AvatarFallback>
+                      </>
+                    )}
+                  </Avatar>
+                </SidebarMenuButton>
+              ) : (
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    {isPending ? (
+                      <Skeleton className="h-full w-full rounded-lg bg-sidebar-foreground/20" />
+                    ) : (
+                      <>
+                        <AvatarImage src={userAvatar} alt={userName} />
+                        <AvatarFallback className="rounded-lg">
+                          {userInitials}
+                        </AvatarFallback>
+                      </>
+                    )}
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    {isPending ? (
+                      <>
+                        <Skeleton className="mb-1 h-4 w-24 bg-sidebar-foreground/20" />
+                        <Skeleton className="h-3 w-32 bg-sidebar-foreground/20" />
+                      </>
+                    ) : (
+                      <>
+                        <span className="truncate font-medium">{userName}</span>
+                        <span className="truncate text-xs">{email}</span>
+                      </>
+                    )}
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+              )
+            }
+          />
           <DropdownMenuContent
             className="w-(--anchor-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}

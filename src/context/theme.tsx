@@ -2,17 +2,18 @@ import { createContext, useContext, useEffect, useState, useMemo } from "react";
 
 import { getCookie, setCookie, removeCookie } from "@/lib/cookies";
 
-type Theme = "dark" | "light" | "system";
+export type Theme = "dark" | "light" | "system";
 type ResolvedTheme = Exclude<Theme, "system">;
 
 const DEFAULT_THEME = "system";
-const THEME_COOKIE_NAME = "vite-ui-theme";
+export const THEME_COOKIE_NAME = "vite-ui-theme";
 const THEME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 type ThemeProviderProps = {
   children: React.ReactNode;
   defaultTheme?: Theme;
   storageKey?: string;
+  serverTheme?: Theme;
 };
 
 type ThemeProviderState = {
@@ -37,10 +38,13 @@ export function ThemeProvider({
   children,
   defaultTheme = DEFAULT_THEME,
   storageKey = THEME_COOKIE_NAME,
+  serverTheme,
   ...props
 }: ThemeProviderProps) {
   const [theme, _setTheme] = useState<Theme>(() => {
-    // Only read cookie on client (SSR safe)
+    // Use server theme if provided (SSR)
+    if (serverTheme) return serverTheme;
+    // Fallback to cookie on client
     if (typeof document === "undefined") return defaultTheme;
     return (getCookie(storageKey) as Theme) || defaultTheme;
   });
