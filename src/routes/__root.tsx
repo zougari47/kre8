@@ -1,11 +1,12 @@
 /// <reference types="vite/client" />
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { ThemeProvider } from "@/context/theme";
 import { authClient } from "@/lib/auth/client";
 import { getToken } from "@/lib/auth/server";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
 import { QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   Outlet,
   HeadContent,
@@ -13,6 +14,7 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 import { createRootRouteWithContext } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 
 import { Toaster } from "@/components/ui/sonner";
@@ -92,6 +94,13 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <body className="bg-background text-foreground">
         {children}
         <Toaster />
+
+        {import.meta.env.DEV && (
+          <>
+            <ReactQueryDevtools buttonPosition="bottom-left" />
+            <TanStackRouterDevtools position="bottom-right" />
+          </>
+        )}
         <Scripts />
       </body>
     </html>
