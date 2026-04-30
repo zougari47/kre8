@@ -1,5 +1,5 @@
-import { AppHeader } from "@/components/layout/header";
-import { AppSidebar } from "@/components/layout/sidebar";
+import { AppHeader } from "@/components/layout/app";
+import { AppSidebar } from "@/components/layout/app";
 import { api } from "@/convex/_generated/api";
 import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
