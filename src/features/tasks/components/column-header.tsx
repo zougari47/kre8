@@ -1,3 +1,4 @@
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { type Column } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown, EyeOff } from "lucide-react";
 
@@ -12,6 +13,8 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
+import type { TaskSortId } from "@/routes/_protected/tasks";
+
 type DataTableColumnHeaderProps<TData, TValue> =
   React.HTMLAttributes<HTMLDivElement> & {
     column: Column<TData, TValue>;
@@ -23,9 +26,24 @@ export function DataTableColumnHeader<TData, TValue>({
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
+  const navigate = useNavigate({ from: "/tasks" });
+  const search = useSearch({ from: "/_protected/tasks" });
+
+  const handleSort = (desc: boolean) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        sort: [{ id: column.id as TaskSortId, desc }],
+      }),
+    });
+  };
+
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
   }
+
+  const sortEntry = search.sort?.find((s) => s.id === column.id);
+  const isSorted = sortEntry ? (sortEntry.desc ? "desc" : "asc") : false;
 
   return (
     <div className={cn("flex items-center", className)}>
@@ -38,9 +56,9 @@ export function DataTableColumnHeader<TData, TValue>({
               className="-ml-2.5 h-8 data-open:bg-accent"
             >
               <span>{title}</span>
-              {column.getIsSorted() === "desc" ? (
+              {isSorted === "desc" ? (
                 <ArrowDown className="ms-2 h-4 w-4" />
-              ) : column.getIsSorted() === "asc" ? (
+              ) : sortEntry ? (
                 <ArrowUp className="ms-2 h-4 w-4" />
               ) : (
                 <ArrowUpDown className="ms-2 h-4 w-4" />
@@ -49,11 +67,11 @@ export function DataTableColumnHeader<TData, TValue>({
           }
         />
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+          <DropdownMenuItem onClick={() => handleSort(false)}>
             <ArrowUp className="size-3.5 text-muted-foreground/70" />
             Asc
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+          <DropdownMenuItem onClick={() => handleSort(true)}>
             <ArrowDown className="size-3.5 text-muted-foreground/70" />
             Desc
           </DropdownMenuItem>
