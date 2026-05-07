@@ -35,7 +35,11 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: "_id",
     header: "ID",
-    cell: ({ row }) => row.original._id.toString().slice(0, 6),
+    cell: ({ row }) => (
+      <div className="w-20">{row.original._id.toString().slice(0, 6)}</div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
   },
 
   {
@@ -43,16 +47,26 @@ export const columns: ColumnDef<Task>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Title" />
     ),
+    meta: {
+      className: "ps-1 w-2/3 max-w-0",
+      tdClassName: "ps-4",
+    },
   },
 
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    meta: { className: "ps-1", tdClassName: "ps-4" },
   },
 
   {
     accessorKey: "priority",
-    header: "Priority",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Priority" />
+    ),
+    meta: { className: "ps-1", tdClassName: "ps-4" },
     cell: ({ row }) => {
       const value = row.original.priority;
       const variant =
@@ -66,7 +80,10 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: "_creationTime",
-    header: "Creation Date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Creation Date" />
+    ),
+    meta: { className: "ps-1", tdClassName: "ps-4" },
     cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
   },
 ];

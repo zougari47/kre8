@@ -3,10 +3,13 @@ import {
   useReactTable,
   getCoreRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
 
 import { useQuery } from "convex/react";
+
+import { cn } from "@/lib/utils";
 
 import {
   Table,
@@ -37,6 +40,7 @@ export function DataTable() {
     // onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   if (data === undefined) {
@@ -61,7 +65,14 @@ export function DataTable() {
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id}>
                 {hg.headers.map((h) => (
-                  <TableHead key={h.id}>
+                  <TableHead
+                    key={h.id}
+                    className={cn(
+                      "py-2",
+                      (h.column.columnDef.meta as Record<string, string>)
+                        ?.className,
+                    )}
+                  >
                     {flexRender(h.column.columnDef.header, h.getContext())}
                   </TableHead>
                 ))}
@@ -76,7 +87,14 @@ export function DataTable() {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-4">
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        "py-4",
+                        (cell.column.columnDef.meta as Record<string, string>)
+                          ?.tdClassName,
+                      )}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
