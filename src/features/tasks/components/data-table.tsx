@@ -68,7 +68,7 @@ export function DataTable() {
                   <TableHead
                     key={h.id}
                     className={cn(
-                      "border border-red-200 py-2",
+                      "py-2",
                       (h.column.columnDef.meta as Record<string, string>)
                         ?.className,
                     )}
@@ -91,7 +91,6 @@ export function DataTable() {
                       key={cell.id}
                       className={cn(
                         "py-4",
-                        "border border-red-200",
                         (cell.column.columnDef.meta as Record<string, string>)
                           ?.tdClassName,
                       )}
