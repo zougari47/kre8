@@ -1,10 +1,6 @@
-import { QueryInput } from "@/components/shared/query-input";
-import { getRouteApi } from "@tanstack/react-router";
-
 import { CreateTaskButton } from "./components/create-task-button";
 import { DataTable } from "./components/data-table";
-
-const ROUTE_API = getRouteApi("/_protected/tasks");
+import { QueryInput } from "./components/query-input";
 
 export function TasksPage() {
   return (
@@ -16,7 +12,7 @@ export function TasksPage() {
           modify it!!
         </p>
         <CreateTaskButton />
-        <QueryInput routeApi={ROUTE_API} />
+        <QueryInput fromN="/tasks" fromS="/_protected/tasks" />
       </div>
       <DataTable />
     </div>
