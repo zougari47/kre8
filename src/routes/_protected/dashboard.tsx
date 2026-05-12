@@ -1,18 +1,11 @@
-import { QueryInput } from "@/components/shared/query-input";
 import { authClient } from "@/lib/auth/client";
-import {
-  createFileRoute,
-  getRouteApi,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/_protected/dashboard")({
   component: RouteComponent,
 });
-
-const routeAPI = getRouteApi("/_protected/dashboard");
 
 function RouteComponent() {
   const navigate = useNavigate();
@@ -22,7 +15,6 @@ function RouteComponent() {
 
   return (
     <div className="p-8">
-      <QueryInput routeApi={routeAPI} />
       <h1 className="mb-4 text-2xl font-bold">Dashboard</h1>
 
       <div className="space-y-2">

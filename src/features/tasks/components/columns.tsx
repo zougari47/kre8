@@ -1,14 +1,10 @@
-import { api } from "@/convex/_generated/api";
 import { ColumnDef } from "@tanstack/react-table";
-
-import { FunctionReturnType } from "convex/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { Task } from "../types";
 import { DataTableColumnHeader } from "./column-header";
-
-type Task = FunctionReturnType<typeof api.tasks.listTasks>[number];
 
 export const columns: ColumnDef<Task>[] = [
   {
