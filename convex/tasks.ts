@@ -2,8 +2,10 @@ import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server";
 
+import type { MutationCtx, QueryCtx } from "./_generated/server";
+
 // Helper to require authentication
-async function requireAuth(ctx: any) {
+async function requireAuth(ctx: MutationCtx | QueryCtx) {
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) {
     throw new Error("Unauthenticated: must be logged in");

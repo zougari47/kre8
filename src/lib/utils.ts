@@ -5,6 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function requireEnv(name: string) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing ${name}`);
+  return value;
+}
+
 /**
  * Returns an array of page numbers (1-based) and ellipsis strings to render
  * in a pagination control. Always shows the first and last page, the current

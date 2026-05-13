@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 
 export type PasswordScore = 0 | 1 | 2 | 3 | 4;
 
-interface PasswordMeterProps extends React.ComponentProps<"div"> {
+type PasswordMeterProps = {
   score: PasswordScore;
-}
+} & React.ComponentProps<"div">;
 
 const scoreConfig = {
   0: {

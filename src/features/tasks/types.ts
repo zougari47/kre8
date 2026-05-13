@@ -1,7 +1,8 @@
-import { api } from "@/convex/_generated/api";
 import z from "zod";
 
 import type { FunctionReturnType } from "convex/server";
+
+import type { api } from "@/convex/_generated/api";
 
 export type Task = FunctionReturnType<typeof api.tasks.listTasks>[number];
 export type Status = Task["status"];

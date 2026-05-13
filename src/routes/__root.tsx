@@ -1,19 +1,18 @@
 /// <reference types="vite/client" />
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { ThemeProvider } from "@/context/theme";
 import { authClient } from "@/lib/auth/client";
 import { getToken } from "@/lib/auth/server";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
-import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   Outlet,
   HeadContent,
   Scripts,
   useRouteContext,
+  createRootRouteWithContext,
 } from "@tanstack/react-router";
-import { createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 
@@ -22,6 +21,7 @@ import { Toaster } from "@/components/ui/sonner";
 import appCss from "@/styles/globals.css?url";
 
 import type { ConvexQueryClient } from "@convex-dev/react-query";
+import type { QueryClient } from "@tanstack/react-query";
 
 // Get auth information for SSR using available cookies
 const getAuth = createServerFn({ method: "GET" }).handler(async () => {

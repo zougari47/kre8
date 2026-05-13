@@ -34,9 +34,9 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface NavUserProps extends React.ComponentProps<"ul"> {
+type NavUserProps = {
   minimal?: boolean; // show only the Avatar to trigger the dropdown menu
-}
+} & React.ComponentProps<"ul">;
 
 export function NavUser({
   minimal = false,

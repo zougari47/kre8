@@ -1,4 +1,5 @@
-import { InputHTMLAttributes, useEffect, useState } from "react";
+import type { InputHTMLAttributes } from "react";
+import { useEffect, useState } from "react";
 
 import { useNavigate, useSearch } from "@tanstack/react-router";
 

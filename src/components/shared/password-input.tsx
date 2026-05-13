@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export interface PasswordInputProps extends Omit<
+export type PasswordInputProps = {} & Omit<
   React.ComponentProps<"input">,
   "type"
-> {}
+>;
 
 export function PasswordInput({ className, ...props }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);

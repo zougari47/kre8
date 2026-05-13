@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 
-interface DataTableFacetedFilterProps<TValue extends string> {
+type DataTableFacetedFilterProps<TValue extends string> = {
   title?: string;
   options: {
     label: string;
@@ -32,7 +32,7 @@ interface DataTableFacetedFilterProps<TValue extends string> {
   selectedValues?: TValue[];
   onSelect: (values: TValue[]) => void;
   counts?: Record<string, number>;
-}
+};
 
 export function DataTableFacetedFilter<TValue extends string>({
   title,

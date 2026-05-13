@@ -4,15 +4,41 @@ export default defineConfig({
   plugins: [
     "typescript",
     "unicorn",
+    "import",
     "react",
     "react-perf",
-    "import",
     "jsx-a11y",
   ],
   categories: {
+    // suspicious: "warn",
     correctness: "error",
   },
-  rules: {},
+  rules: {
+    "typescript/consistent-type-imports": [
+      "error",
+      {
+        prefer: "type-imports",
+        fixStyle: "separate-type-imports",
+      },
+    ],
+    "typescript/consistent-type-definitions": ["error", "type"],
+    "typescript/array-type": ["error", { default: "array" }],
+    "typescript/no-non-null-assertion": "error",
+    "typescript/no-explicit-any": "error",
+
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+
+    eqeqeq: "error",
+    "no-console": "warn",
+
+    "react/self-closing-comp": "error",
+    // "react-perf/jsx-no-new-object-as-prop": "error",
+    // "react-perf/jsx-no-new-array-as-prop": "error",
+
+    // Turn off rules
+    "react/react-in-jsx-scope": "off",
+  },
   settings: {
     react: { version: "19" },
   },

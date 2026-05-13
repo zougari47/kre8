@@ -2,6 +2,8 @@ import { createClient } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { betterAuth } from "better-auth/minimal";
 
+import { requireEnv } from "@/lib/utils";
+
 import { components, internal } from "./_generated/api";
 import { query } from "./_generated/server";
 import authConfig from "./auth.config";
@@ -9,7 +11,8 @@ import authConfig from "./auth.config";
 import type { DataModel } from "./_generated/dataModel";
 import type { AuthFunctions, GenericCtx } from "@convex-dev/better-auth";
 
-const siteUrl = process.env.SITE_URL!;
+// const siteUrl = process.env.SITE_URL!;
+const siteUrl = requireEnv("SITE_URL");
 
 const authFunctions: AuthFunctions = internal.auth;
 
