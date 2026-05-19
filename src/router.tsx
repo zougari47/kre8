@@ -3,12 +3,14 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 
-import { requireEnv } from "@/lib/utils";
-
 import { routeTree } from "./routeTree.gen";
 
 export function getRouter() {
-  const CONVEX_URL = requireEnv("VITE_CONVEX_URL");
+  const CONVEX_URL = import.meta.env.VITE_CONVEX_URL;
+
+  if (!CONVEX_URL) {
+    throw new Error("Missing VITE_CONVEX_URL in env file.");
+  }
 
   const convexQueryClient = new ConvexQueryClient(CONVEX_URL, {
     expectAuth: true,
