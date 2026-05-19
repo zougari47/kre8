@@ -1,0 +1,6 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "tags": ["-lintignore"],
+  "entry": ["src/router.tsx", "src/routes/**/*.{ts,tsx}"],
+  "ignore": ["src/components/ui/**"]
+}
